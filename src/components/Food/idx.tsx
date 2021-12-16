@@ -14,7 +14,7 @@ interface FoodsArrayProps {
 }
 
 interface FoodProps extends FoodsArrayProps {
-  isAvailable: boolean;
+  isAvaliable: boolean;
   handleDelete: (id: number) => void;
   handleEditFood: (id: number) => void;
 }
@@ -22,72 +22,76 @@ interface FoodProps extends FoodsArrayProps {
 
 
 export const Foods = ({ food, handleDelete, handleEditFood, isAvaliable }: FoodProps) => {
-  console.log(isAvaliable)
-  const toggleAvailable = async (id: number) => {
-    // const { food } = this.props;
-     if (isAvaliable) {
-       food.avaliable = false;
-     } else {
-       isAvaliable = true;
-     }
 
+
+  const toggleAvailable = async () => {
+    if (food.avaliable) {
+      await api.put(`/food/${food.id}`, {
+        ...food,
+        available: false
+      })
+    } else {
+      await api.put(`/food/${food.id}`, {
+        ...food,
+        available: true,
+      })
+    }
+    // food.avaliable? console.log(true) : console.log(false);
     // await  api.put(`/foods/${id}`, {
     //   ...food,
-    //   available: !isAvailable,
+    //   available: !isAvaliable,
     // });
+    // this.setState({ isAvaliable: !isAvaliable });
 
-    // this.setState({ isAvailable: !isAvailable });
-  };
-  
-  return (
-    <Container available={isAvailable} key={food.id}>
-      <header>
-        <img src={food.image} alt={food.name} />
-      </header>
-      <section className="body">
-        <h2>{food.name}</h2>
-        <p>{food.description}</p>
-        <p className="price">
-          R$ <b>{food.price}</b>
-        </p>
-      </section>
-      <section className="footer">
-        <div className="icon-container">
-          <button
-            type="button"
-            className="icon"
-            // onClick={handleEditFood(food.id)}
-            data-testid={`edit-food-${food.id}`}
-          >
-            <FiEdit3 size={20} />
-          </button>
+    return (
+      <Container available={isAvaliable} key={food.id}>
+        <header>
+          <img src={food.image} alt={food.name} />
+        </header>
+        <section className="body">
+          <h2>{food.name}</h2>
+          <p>{food.description}</p>
+          <p className="price">
+            R$ <b>{food.price}</b>
+          </p>
+        </section>
+        <section className="footer">
+          <div className="icon-container">
+            <button
+              type="button"
+              className="icon"
+              onClick={() => handleEditFood(food.id)}
+              data-testid={`edit-food-${food.id}`}
+            >
+              <FiEdit3 size={20} />
+            </button>
 
-          <button
-            type="button"
-            className="icon"
-            onClick={() => handleDelete(food.id)}
-            data-testid={`remove-food-${food.id}`}
-          >
-            <FiTrash size={20} />
-          </button>
-        </div>
+            <button
+              type="button"
+              className="icon"
+              onClick={() => handleDelete(food.id)}
+              data-testid={`remove-food-${food.id}`}
+            >
+              <FiTrash size={20} />
+            </button>
+          </div>
 
-        <div className="availability-container">
-          <p>{food.available ? "Disponível" : "Indisponível"}</p>
+          <div className="availability-container">
+            <p>{isAvaliable ? "Disponível" : "Indisponível"}</p>
 
-          <label htmlFor={`available-switch-${food.id}`} className="switch">
-            <input
-              id={`available-switch-${food.id}`}
-              type="checkbox"
-              checked={food.available}
-              onChange={toggleAvailable(food.id)}
-              data-testid={`change-status-food-${food.id}`}
-            />
-            <span className="slider" />
-          </label>
-        </div>
-      </section>
-    </Container>
-  )
+            <label htmlFor={`available-switch-${food.id}`} className="switch">
+              <input
+                id={`available-switch-${food.id}`}
+                type="checkbox"
+                checked={isAvaliable}
+                onClick={() => toggleAvailable()}
+                data-testid={`change-status-food-${food.id}`}
+              />
+              <span className="slider" />
+            </label>
+          </div>
+        </section>
+      </Container>
+    )
+  }
 }
-
